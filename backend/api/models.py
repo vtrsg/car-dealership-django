@@ -4,7 +4,7 @@ from django.utils import timezone
 
 class User(models.Model):
     name = models.CharField(max_length=100)
-    email = models.EmailField(max_length=100, blank=True)
+    email = models.EmailField(max_length=100, blank=True, unique=True)
     phone = models.CharField(max_length=50)
     cpf = models.CharField(max_length=11, unique=True)
     created_date = models.DateTimeField(default=timezone.now)
