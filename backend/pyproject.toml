@@ -9,21 +9,23 @@ readme = "README.md"
 python = "^3.11"
 django = "^4.2.7"
 djangorestframework = "^3.14.0"
+pytest-django = "^4.7.0"
+coverage = "^7.3.2"
+pytest-cov = "^4.1.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"
-pytest-cov = "^4.1.0"
 taskipy = "^1.12.0"
 blue = "^0.9.1"
 ruff = "^0.1.5"
-httpx = "^0.25.1"
 isort = "^5.12.0"
 
 [tool.taskipy.tasks]
 lint = 'ruff . && blue --check . --diff'
 format = 'blue .  && isort .'
-run = 'uvicorn backend.app:app --reload'
-test = 'pytest -s -x --cov=backend -vv'
+run = 'python manage.py runserver'
+migrate = 'python manage.py makemigrations && python manage.py migrate'
+test = 'pytest . --cov-report term --cov=. --cov-fail-under=80'
 post_test = 'coverage html'
 
 [tool.ruff]
@@ -36,7 +38,7 @@ line_length = 79
 extend_skip = ['migrations']
 
 [tool.pytest.ini_options]
-pythonpath = "."
+pythonpath = "tests.py test_*.py *_tests.py"
 
 [tool.blue]
 extend-exclude = '(migrations/)'
