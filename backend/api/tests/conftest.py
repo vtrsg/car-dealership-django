@@ -16,6 +16,28 @@ def user_data():
 
 
 @pytest.fixture
+def user_invalid_data():
+    user_invalid_data = {
+        'name': 'Test User',
+        'email': 'test@example.com',
+        'phone': 'invalid phone',
+    }
+    return user_invalid_data
+
+
+@pytest.fixture
+def user_request_data():
+    user_request_data = {
+        'name': 'other test user',
+        'email': 'testother@testuser.com',
+        'phone': '+555199999-9999',
+        'cpf': '000.000.000-01',
+    }
+
+    return user_request_data
+
+
+@pytest.fixture
 def brand_data():
     brand_data = Brand.objects.create(name='Mercedes')
 
