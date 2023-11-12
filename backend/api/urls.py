@@ -2,6 +2,7 @@ from django.urls import path
 
 from .views.brand_view import BrandViewSet
 from .views.user_view import UserViewSet
+from .views.year_view import YearViewSet
 
 app_name = 'api'
 
@@ -32,5 +33,15 @@ urlpatterns = [
         'brands/<pk_brand>/',
         BrandViewSet.as_view({'get': 'retrieve'}),
         name='brand_detail',
+    ),
+    path(
+        'years/',
+        YearViewSet.as_view({'get': 'list'}),
+        name='years',
+    ),
+    path(
+        'years/<pk_year>/',
+        YearViewSet.as_view({'get': 'retrieve'}),
+        name='year_detail',
     ),
 ]
