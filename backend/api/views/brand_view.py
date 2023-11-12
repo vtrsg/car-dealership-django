@@ -22,7 +22,7 @@ class BrandViewSet(viewsets.ViewSet):
             return Response(
                 {
                     'status': 'Error',
-                    'message': f'User {pk_brand} not found!',
+                    'message': f'Brand {pk_brand} not found!',
                 },
                 status=status.HTTP_404_NOT_FOUND,
             )
