@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .views.brand_view import BrandViewSet
+from .views.car_view import CarViewSet
 from .views.model_view import ModelViewSet
 from .views.user_view import UserViewSet
 from .views.year_view import YearViewSet
@@ -24,6 +25,23 @@ urlpatterns = [
             }
         ),
         name='user_detail',
+    ),
+    path(
+        'cars/',
+        CarViewSet.as_view({'post': 'create', 'get': 'list'}),
+        name='cars',
+    ),
+    path(
+        'cars/<pk_car>/',
+        CarViewSet.as_view(
+            {
+                'put': 'update',
+                'patch': 'update',
+                'delete': 'destroy',
+                'get': 'retrieve',
+            }
+        ),
+        name='car_detail',
     ),
     path(
         'brands/',
