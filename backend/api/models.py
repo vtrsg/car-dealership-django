@@ -14,16 +14,22 @@ class Brand(models.Model):
     name = models.CharField(max_length=100)
 
 
-class ModelType(models.Model):
-    name = models.CharField(max_length=100)
-
-
 class Year(models.Model):
     year = models.CharField(max_length=4)
 
 
-class Car(models.Model):
+class ModelType(models.Model):
+    name = models.CharField(max_length=100)
+    brand_id = models.ForeignKey(
+        Brand, on_delete=models.SET_NULL, blank=True, null=True
+    )
+    year_id = models.ForeignKey(
+        Year, on_delete=models.SET_NULL, blank=True, null=True
+    )
+    category = models.CharField(max_length=100)
 
+
+class Car(models.Model):
     STATES = (
         (0, 'MG'),
         (1, 'RJ'),
