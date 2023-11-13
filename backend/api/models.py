@@ -65,9 +65,10 @@ class Car(models.Model):
     fuel = models.PositiveSmallIntegerField(choices=FUEL)
     created_date = models.DateField(default=timezone.now)
     activate = models.BooleanField(default=False)
-    image_file = models.CharField(max_length=100)
+    main_image = models.URLField()
 
 
 class CarImages(models.Model):
+    name = models.CharField(max_length=100)
     car_id = models.ForeignKey(Car, on_delete=models.CASCADE)
     image_url = models.URLField()
