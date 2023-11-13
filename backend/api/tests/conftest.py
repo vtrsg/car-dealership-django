@@ -1,6 +1,6 @@
 import pytest
 
-from api.models import Brand, ModelType, User, Year
+from api.models import Brand, Car, ModelType, User, Year
 
 
 @pytest.fixture
@@ -56,3 +56,96 @@ def year_data():
     year_data = Year.objects.create(year='2020')
 
     return year_data
+
+
+@pytest.fixture
+def car_data(user_data, brand_data, model_type_data, year_data):
+    car_data = Car.objects.create(
+        name='car test 1',
+        location=2,
+        transmission=0,
+        price=120000,
+        discount_price=10000,
+        mileage=500000,
+        color='black',
+        seat=5,
+        fuel=0,
+        activate=True,
+        main_image='https://exemplo.com.br/image_test.png',
+        user_id=user_data,
+        brand_id=brand_data,
+        model_id=model_type_data,
+        year_id=year_data,
+    )
+
+    return car_data
+
+
+@pytest.fixture
+def car_request_data(user_data, brand_data, model_type_data, year_data):
+    car_request_data = {
+        'name': 'car test 2',
+        'location': 2,
+        'transmission': 0,
+        'price': 1500000,
+        'discount_price': 5000,
+        'mileage': 500000,
+        'color': 'green',
+        'seat': 5,
+        'fuel': 0,
+        'activate': True,
+        'main_image': 'https://exemplo.com.br/image_test_2.png',
+        'user_id': user_data.id,
+        'brand_id': brand_data.id,
+        'model_id': model_type_data.id,
+        'year_id': year_data.id,
+    }
+
+    return car_request_data
+
+
+@pytest.fixture
+def car_request_data_with_images(
+    user_data, brand_data, model_type_data, year_data
+):
+    car_request_data_with_images = {
+        'name': 'car test 3',
+        'location': 2,
+        'transmission': 0,
+        'price': 1500000,
+        'discount_price': 5000,
+        'mileage': 500000,
+        'color': 'green',
+        'seat': 5,
+        'fuel': 0,
+        'activate': True,
+        'main_image': 'https://exemplo.com.br/image_test_2.png',
+        'user_id': user_data.id,
+        'brand_id': brand_data.id,
+        'model_id': model_type_data.id,
+        'year_id': year_data.id,
+        'images': [
+            {'name': 'image1', 'image_url': 'https://example.com/image1.jpg'},
+            {'name': 'image2', 'image_url': 'https://example.com/image2.jpg'},
+        ],
+    }
+
+    return car_request_data_with_images
+
+
+@pytest.fixture
+def car_invalid_request_data():
+    car_invalid_request_data = {
+        'name': 'car test 2',
+        'location': 10,
+        'transmission': 0,
+        'price': 1500000,
+        'discount_price': 5000,
+        'mileage': 500000,
+        'color': 'green',
+        'seat': 5,
+        'fuel': 300,
+        'activate': True,
+    }
+
+    return car_invalid_request_data
