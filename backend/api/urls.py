@@ -65,12 +65,19 @@ urlpatterns = [
     ),
     path(
         'models/',
-        ModelViewSet.as_view({'get': 'list'}),
+        ModelViewSet.as_view({'post': 'create', 'get': 'list'}),
         name='models',
     ),
     path(
         'models/<pk_model>/',
-        ModelViewSet.as_view({'get': 'retrieve'}),
+        ModelViewSet.as_view(
+            {
+                'put': 'update',
+                'patch': 'update',
+                'delete': 'destroy',
+                'get': 'retrieve',
+            }
+        ),
         name='model_detail',
     ),
 ]
