@@ -46,7 +46,7 @@ def test_create_car(user_data, brand_data, model_type_data, year_data):
         color='black',
         seat=5,
         fuel=2,
-        image_file='https://localtest.com/image.jpg',
+        main_image='https://localtest.com/image.jpg',
     )
 
     assert car.name == 'Car Test'
@@ -58,4 +58,4 @@ def test_create_car(user_data, brand_data, model_type_data, year_data):
     assert car.color == 'black'
     assert car.seat == 5
     assert car.fuel == 2
-    assert car.image_file == 'https://localtest.com/image.jpg'
+    assert car.main_image == 'https://localtest.com/image.jpg'

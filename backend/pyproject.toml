@@ -26,7 +26,7 @@ format = 'blue .  && isort .'
 run = 'python manage.py runserver'
 migrate = 'python manage.py makemigrations && python manage.py migrate'
 test = 'pytest . --cov-report term --cov=. --cov-fail-under=80'
-post_test = 'coverage html'
+post_test = 'pytest . --cov-report html --cov=. --cov-fail-under=80'
 
 [tool.ruff]
 line-length = 79
@@ -38,7 +38,7 @@ line_length = 79
 extend_skip = ['migrations']
 
 [tool.pytest.ini_options]
-pythonpath = "tests.py test_*.py *_tests.py"
+pythonpath = "test_* tests.py test_*.py *_tests.py test.py tests.py test_*.py tests_*.py *_test.py *_tests.py"
 
 [tool.blue]
 extend-exclude = '(migrations/)'
