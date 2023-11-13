@@ -19,9 +19,12 @@ def test_create_brand(brand_data):
 
 
 @mark.django_db
-def test_create_model_type(model_type_data):
+def test_create_model_type(model_type_data, brand_data, year_data):
     model = model_type_data
-    assert model.name == 'SUV'
+    assert model.category == 'SUV'
+    assert model.name == 'Kicks ADVANCE'
+    assert model.brand_id == brand_data
+    assert model.year_id == year_data
 
 
 @mark.django_db

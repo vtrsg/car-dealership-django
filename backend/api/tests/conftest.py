@@ -3,7 +3,7 @@ import pytest
 from api.models import Brand, Car, ModelType, User, Year
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def user_data():
     user_data = User.objects.create(
         name='test user',
@@ -15,7 +15,7 @@ def user_data():
     return user_data
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def user_invalid_data():
     user_invalid_data = {
         'name': 'Test User',
@@ -25,40 +25,69 @@ def user_invalid_data():
     return user_invalid_data
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def user_request_data():
     user_request_data = {
         'name': 'other test user',
-        'email': 'testother@testuser.com',
+        'email': 'testother1@testuser.com',
         'phone': '+555199999-9999',
-        'cpf': '000.000.000-01',
+        'cpf': '030.450.000-01',
     }
 
     return user_request_data
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def brand_data():
     brand_data = Brand.objects.create(name='Mercedes')
 
     return brand_data
 
 
-@pytest.fixture
-def model_type_data():
-    model_type_data = ModelType.objects.create(name='SUV')
-
-    return model_type_data
-
-
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def year_data():
     year_data = Year.objects.create(year='2020')
 
     return year_data
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
+def model_type_data(brand_data, year_data):
+    model_type_data = ModelType.objects.create(
+        name='Kicks ADVANCE',
+        category='SUV',
+        brand_id=brand_data,
+        year_id=year_data,
+    )
+
+    return model_type_data
+
+
+@pytest.fixture(autouse=True)
+def request_model_type_data(brand_data, year_data):
+    request_model_type_data = {
+        'name': 'Ecosport',
+        'category': 'SUV',
+        'brand_id': brand_data.pk,
+        'year_id': year_data.pk,
+    }
+
+    return request_model_type_data
+
+
+@pytest.fixture(autouse=True)
+def request_invalid_model_type_data():
+    request_invalid_model_type_data = {
+        'name': 'Ecosport',
+        'category': 'SUV',
+        'brand_id': 50,
+        'year_id': 30,
+    }
+
+    return request_invalid_model_type_data
+
+
+@pytest.fixture(autouse=True)
 def car_data(user_data, brand_data, model_type_data, year_data):
     car_data = Car.objects.create(
         name='car test 1',
@@ -81,7 +110,7 @@ def car_data(user_data, brand_data, model_type_data, year_data):
     return car_data
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def car_request_data(user_data, brand_data, model_type_data, year_data):
     car_request_data = {
         'name': 'car test 2',
@@ -104,7 +133,7 @@ def car_request_data(user_data, brand_data, model_type_data, year_data):
     return car_request_data
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def car_request_data_with_images(
     user_data, brand_data, model_type_data, year_data
 ):
@@ -133,7 +162,7 @@ def car_request_data_with_images(
     return car_request_data_with_images
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def car_invalid_request_data():
     car_invalid_request_data = {
         'name': 'car test 2',
