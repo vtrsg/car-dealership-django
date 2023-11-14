@@ -1,13 +1,50 @@
+from django.conf import settings
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    Group,
+    Permission,
+    PermissionsMixin,
+)
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+
+from .utils.account_manager import CustomAccountManager
 
 
-class User(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField(max_length=100, blank=True, unique=True)
+class User(AbstractBaseUser, PermissionsMixin):
+    user_name = models.CharField(max_length=150, unique=True)
+    first_name = models.CharField(max_length=150, blank=True)
+    email = models.EmailField(unique=True)
     phone = models.CharField(max_length=50)
     cpf = models.CharField(max_length=11, unique=True)
-    created_date = models.DateTimeField(default=timezone.now)
+    start_date = models.DateTimeField(default=timezone.now)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
+
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name=_('groups'),
+        blank=True,
+        help_text=_(
+            'The groups this user belongs to. A user will get all permissions '
+            'granted to each of their groups.'
+        ),
+        related_name='api_user_groups',
+    )
+
+    user_permissions = models.ManyToManyField(
+        Permission,
+        verbose_name=_('user permissions'),
+        blank=True,
+        help_text=_('Specific permissions for this user.'),
+        related_name='api_user_permissions',
+    )
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['user_name', 'first_name']
+
+    objects = CustomAccountManager()
 
 
 class Brand(models.Model):
@@ -50,7 +87,9 @@ class Car(models.Model):
         (2, 'Hybrid'),
     )
 
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
     name = models.CharField(max_length=100)
     brand_id = models.ForeignKey(
         Brand, on_delete=models.SET_NULL, blank=True, null=True
@@ -72,6 +111,7 @@ class Car(models.Model):
     created_date = models.DateField(default=timezone.now)
     activate = models.BooleanField(default=False)
     main_image = models.URLField()
+    about = models.TextField(max_length=500, blank=True, null=True)
 
 
 class CarImages(models.Model):
