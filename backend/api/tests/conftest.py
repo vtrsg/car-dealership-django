@@ -6,10 +6,12 @@ from api.models import Brand, Car, ModelType, User, Year
 @pytest.fixture(autouse=True)
 def user_data():
     user_data = User.objects.create(
-        name='test user',
+        user_name='test user',
+        first_name='test user',
         email='test@testuser.com',
         phone='51 9 9999-9999',
         cpf='000.000.000-00',
+        password='123456789',
     )
 
     return user_data
@@ -28,10 +30,12 @@ def user_invalid_data():
 @pytest.fixture(autouse=True)
 def user_request_data():
     user_request_data = {
-        'name': 'other test user',
+        'user_name': 'other test user',
+        'first_name': 'other test user',
         'email': 'testother1@testuser.com',
         'phone': '+555199999-9999',
         'cpf': '030.450.000-01',
+        'password': '123456789',
     }
 
     return user_request_data

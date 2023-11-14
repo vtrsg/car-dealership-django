@@ -1,157 +1,94 @@
 import pytest
 from rest_framework import status
 from rest_framework.test import APIRequestFactory
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from ...models import User
-from ...views.user_view import UserViewSet
+from ...views.user_view import BlacklistTokenUpdateView, CustomUserCreate
 
 
 @pytest.fixture
-def request_func():
+def request_func(user_request_data):
     factory = APIRequestFactory()
-    request = factory.get('/api/users/')
+    request = factory.post(
+        '/api/user/create/', data=user_request_data, format='json'
+    )
     return request
 
 
-# @pytest.fixture(autouse=True)
-# def user_data_view():
-#     user_data_view = User.objects.create(
-#         name='test user',
-#         email='test@test2user.com',
-#         phone='51 9 9999-9999',
-#         cpf='000.000.030-12',
-#     )
-#     return user_data_view
+@pytest.fixture
+def authenticated_user():
+    user = User.objects.create_user(
+        user_name='test_user',
+        first_name='test user',
+        email='test@test.com',
+        phone='51 9 9999-9999',
+        cpf='010.020.030-40',
+        password='123456789',
+    )
+
+    refresh_token = RefreshToken.for_user(user)
+    return {'refresh_token': str(refresh_token)}
+
+
+@pytest.fixture
+def request_func_blacklist(authenticated_user):
+    factory = APIRequestFactory()
+    request = factory.post(
+        '/api/logout/blacklist/',
+        {'refresh_token': authenticated_user['refresh_token']},
+    )
+    return request
+
+
+@pytest.fixture
+def invalid_request_func_blacklist(authenticated_user):
+    authenticated_user['refresh_token'] = 'invalid_refresh_token'
+    factory = APIRequestFactory()
+    request = factory.post(
+        '/api/logout/blacklist/',
+        {'refresh_token': authenticated_user['refresh_token']},
+    )
+    return request
+
+
 @pytest.mark.django_db
-class TestUserViewSet:
-    def test_list_users(self, request_func):
-        viewset = UserViewSet()
-
-        response = viewset.list(request_func)
-
-        assert response.status_code == status.HTTP_200_OK
-
-    def test_create_user_success(self, user_request_data, request_func):
-        viewset = UserViewSet()
-
-        request = request_func
-        request.data = user_request_data
-        response = viewset.create(request)
-
+class TestUserViews:
+    def test_custom_user_create(self, request_func):
+        view = CustomUserCreate.as_view()
+        response = view(request_func)
         assert response.status_code == status.HTTP_201_CREATED
 
-    def test_create_user_invalid_data(self, user_invalid_data, request_func):
-        viewset = UserViewSet()
-
-        request = request_func
-        request.data = user_invalid_data
-        response = viewset.create(request)
-
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
-
-    def test_retrieve_user(request_func, user_data):
-        viewset = UserViewSet()
-
-        request = request_func
-        request.method = 'GET'
-
-        response = viewset.retrieve(request, pk_user=user_data.pk)
-
-        assert response.status_code == status.HTTP_200_OK
-
-        assert response.data['id'] == user_data.pk
-        assert response.data['name'] == user_data.name
-        assert response.data['email'] == user_data.email
-
-    def test_retrieve_user_not_found(request_func):
-        viewset = UserViewSet()
-        invalid_user_id = 999
-
-        request = request_func
-        request.method = 'GET'
-
-        response = viewset.retrieve(request, pk_user=invalid_user_id)
-
-        assert response.status_code == status.HTTP_404_NOT_FOUND
-
-    def test_update_user(request_func):
-        viewset = UserViewSet()
-        user_data_view = User.objects.create(
-            name='test uuser',
-            email='test@test10user.com',
-            phone='5199999-9999',
-            cpf='200.000.300-12',
-        )
-        user_request = {
-            'name': 'other test user update',
+    def test_invalid_custom_user_create(self):
+        request_func_invalid = {
+            'name': 'Test invalid',
+            'email': 'test@example.com',
+            'phone': '51956235832',
+            'cpf': 'invalid',
         }
-        request = request_func
-        request.method = 'PATCH'
-        request.data = user_request
-
-        response = viewset.update(request, pk_user=user_data_view.pk)
-        assert response.status_code == status.HTTP_200_OK
-
-        assert response.data['status'] == 'Success'
-        assert response.data['message'] == 'User updated successfully.'
-
-    def test_update_user_not_found(request_func):
-        viewset = UserViewSet()
-        invalid_user_id = 999
-
-        request = request_func
-        request.method = 'PATCH'
-        request.data = {}
-
-        response = viewset.update(request, pk_user=invalid_user_id)
-
-        assert response.status_code == status.HTTP_404_NOT_FOUND
-
-    def test_update_user_invalid_data(
-        user_data, request_func, user_invalid_data
-    ):
-        viewset = UserViewSet()
-        user_data_view = User.objects.create(
-            name='test user',
-            email='test@tes8user.com',
-            phone='51 9 9999-9999',
-            cpf='000.500.300-12',
+        factory = APIRequestFactory()
+        request = factory.post(
+            '/api/user/create/', data=request_func_invalid, format='json'
         )
-        request = request_func
-        request.method = 'PATCH'
-        request.data = user_invalid_data
-
-        response = viewset.update(request, pk_user=user_data_view.pk)
+        view = CustomUserCreate.as_view()
+        response = view(request)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-    def test_destroy_user(request_func):
-        viewset = UserViewSet()
-        user_data_view = User.objects.create(
-            name='test user',
-            email='test@test00user.com',
-            phone='51 9 9999-9999',
-            cpf='000.100.300-12',
-        )
-        request = request_func
-        request.method = 'DELETE'
+    def test_blacklist_token_update_view(self, request_func_blacklist):
+        view = BlacklistTokenUpdateView.as_view()
+        response = view(request_func_blacklist)
+        assert response.status_code == status.HTTP_205_RESET_CONTENT
 
-        response = viewset.destroy(request, pk_user=user_data_view.pk)
+    def test_blacklist_token_update_view_exception_handling(
+        self, invalid_request_func_blacklist
+    ):
+        view = BlacklistTokenUpdateView.as_view()
 
-        assert response.status_code == status.HTTP_200_OK
+        response = view(invalid_request_func_blacklist)
 
-        assert response.data['status'] == 'Success'
-        assert (
-            response.data['message']
-            == f'User {user_data_view.pk} deleted successfully.'
-        )
-
-    def test_destroy_user_not_found(request_func):
-        viewset = UserViewSet()
-        invalid_user_id = 999
-
-        request = request_func
-        request.method = 'DELETE'
-
-        response = viewset.destroy(request, pk_user=invalid_user_id)
-        assert response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.data == {
+            'status': 'Error',
+            'errors': 'Token is invalid or expired',
+        }

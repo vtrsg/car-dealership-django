@@ -9,10 +9,11 @@ class TestUserSerializer:
     def user_data_serializer(self, user_data):
         return {
             'id': user_data.pk,
-            'name': 'Test',
+            'user_name': 'TestUser',
             'email': 'test@example.com',
             'phone': '51956235832',
             'cpf': '123.456.789-09',
+            'password': 'secure_password',
         }
 
     @pytest.mark.django_db
@@ -27,7 +28,7 @@ class TestUserSerializer:
 
         user = serializer.save()
 
-        assert user.name == user_data_serializer['name']
+        assert user.user_name == user_data_serializer['user_name']
         assert user.email == user_data_serializer['email']
         assert user.phone == user_data_serializer['phone']
         assert user.cpf == '12345678909'
