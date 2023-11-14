@@ -2,12 +2,14 @@ from django.db import IntegrityError
 from rest_framework import serializers, status, viewsets
 from rest_framework.response import Response
 
+
 from ..models import Car
 from ..serializers.car_serializer import CarSerializer
-
+from ..utils.permission import IsOwnerOrReadOnly
 
 class CarViewSet(viewsets.ViewSet):
     serializer_class = CarSerializer
+    permission_classes = [IsOwnerOrReadOnly]
 
     def get_queryset(self):
         return Car.objects.all()

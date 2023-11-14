@@ -6,7 +6,9 @@ from api.models import Car
 @mark.django_db
 def test_create_user(user_data):
     user = user_data
-    assert user.name == 'test user'
+
+    assert user.user_name == 'test user'
+    assert user.first_name == 'test user'
     assert user.email == 'test@testuser.com'
     assert user.phone == '51 9 9999-9999'
     assert user.cpf == '000.000.000-00'
