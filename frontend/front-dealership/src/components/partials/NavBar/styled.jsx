@@ -17,8 +17,8 @@ export const NavBarArea = styled.div`
             gap: 10px;
         }
         li {
-            a,
-            button {
+            text-align: center;
+            a {
                 border: 0;
                 background: none;
                 color: #333333;
@@ -28,6 +28,22 @@ export const NavBarArea = styled.div`
 
                 &:hover {
                     color: #3374db;
+                }
+            }
+            button {
+                background-color: #3374db;
+                border: 0;
+                outline: 0;
+                padding: 5px 10px;
+                border-radius: 4px;
+                color: #fff;
+                font-size: 1rem;
+                cursor: pointer;
+
+                &:hover {
+                    color: #3374db;
+                    background-color: #ffffff;
+                    border: 1px solid #3374db;
                 }
             }
         }
@@ -97,8 +113,7 @@ export const NavBarArea = styled.div`
             width: 100%;
             text-align: center;
 
-            a,
-            button {
+            a {
                 margin-top: 15px;
                 width: 100%;
                 text-align: center;
