@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { NavBarArea } from './styled';
+import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 export const NavBar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -19,25 +21,23 @@ export const NavBar = () => {
                 <nav className={menuOpen ? 'overlay' : ''}>
                     <ul>
                         <li>
-                            <a href="/">Comprar carro</a>
+                            <Link href="/">Comprar carro</Link>
                         </li>
                         <li>
-                            <a href="/">Vender carro</a>
+                            <Link href="/">Vender carro</Link>
                         </li>
                         <li>
-                            <button>Logout</button>
+                            <Link to="/create" component={NavLink}>
+                                Cadastrar
+                            </Link>
                         </li>
                         <li>
-                            <a href="/">Comprar carro</a>
+                            <Link to="/signin" component={NavLink}>
+                                Login
+                            </Link>
                         </li>
                         <li>
-                            <a href="/">Vender carro</a>
-                        </li>
-                        <li>
-                            <a href="/">Cadastrar</a>
-                        </li>
-                        <li>
-                            <a href="/">Login</a>
+                            <button onClick={handleLogout}>Logout</button>
                         </li>
                     </ul>
                 </nav>
