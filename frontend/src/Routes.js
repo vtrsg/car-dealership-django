@@ -8,7 +8,7 @@ import NotFound from './pages/NotFound';
 const routes = () => {
     return (
         <Routes>
-            <Route exact path="/signin" element={<SignIn />} />
+            <Route exact path="/" element={<SignIn />} />
             <Route exact path="/create" element={<Register />} />
             <Route path="*" element={<NotFound />} />
         </Routes>

@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  backend:
+    volumes:
+      - static:/static
+    build:
+      context: ./backend
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+    volumes:
+      - frontend:/app/build
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - 80:8080
+    volumes:
+      - static:/static
+      - frontend:/var/www/frontend
+    depends_on:
+      - backend
+      - frontend
+
+volumes:
+  frontend:
+  static:
