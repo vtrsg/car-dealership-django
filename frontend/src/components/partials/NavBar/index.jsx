@@ -37,7 +37,7 @@ export const NavBar = () => {
                             </Link>
                         </li>
                         <li>
-                            <button onClick={handleLogout}>Logout</button>
+                            <button>Logout</button>
                         </li>
                     </ul>
                 </nav>
